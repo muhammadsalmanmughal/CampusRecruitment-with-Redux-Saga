@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import AuthRoutes from "./config/routes/AuthRoutes";
+import { connect } from "react-redux";
+import { Switch, Route, Navigate, Routes } from "react-router-dom";
+import { Login, Signup, StudentDashboard } from "./containers";
 
-function App() {
+
+function App(props) {
+  // const userId = ''
+  // const userId = localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : '';
+  // console.log('APP ----> user ID', userId)
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {props.loader ? <div>Loading...</div> : null}
+      <AuthRoutes/>
     </div>
   );
 }
 
-export default App;
+function mapDispatchToProps(dispatch) {
+  return {};
+}
+
+function mapStateToProps(state) {
+  return {
+    loader: state.AppReducer.loader,
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
