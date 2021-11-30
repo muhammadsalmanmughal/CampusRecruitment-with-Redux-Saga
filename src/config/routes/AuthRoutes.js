@@ -3,10 +3,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Login, Signup } from "../../containers";
 import StudentDashboard from "../../containers/StudentDashboard";
 import { connect } from "react-redux";
+import AppRoutes from "./AppRoutes";
 
 class AuthRoutes extends React.Component {
   render() {
-      console.log("user",this.props?.user)
+      // console.log("user",this.props?.user)
     return (
       <div>
         <Routes>
@@ -20,7 +21,7 @@ class AuthRoutes extends React.Component {
           ) : (
             <>
               {/* <Route path="/" component={AuthRoutes} /> */}
-              <Route exact path="/" element={<StudentDashboard />} />
+              <Route exact path="/" element={<AppRoutes />} />
             </>
           )}
         </Routes>
