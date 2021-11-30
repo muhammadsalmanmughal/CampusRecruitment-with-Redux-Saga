@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {connect} from 'react-redux'
+import { connect } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
 import { TextInput, Button } from "../../components";
 import AppActions from "../../store/Actions/AppActions";
@@ -11,11 +11,12 @@ class Login extends Component {
     this.state = {
       email: "random@gmail.com",
       pass: "random",
+      role: "student",
     };
   }
 
   login = () => {
-    const { email, pass } = this.state;
+    const { email, pass, role } = this.state;
     // const { email: userEmail } = JSON.parse(localStorage.getItem("userInfo"));
     // console.log("data from local storage----->", userEmail);
 
@@ -24,23 +25,24 @@ class Login extends Component {
     // } else {
     //   console.log("FALSE");
     // }
-    const {Signin} = this.props
-    Signin({ email, pass });
+    const { Signin } = this.props;
+    Signin({ email, pass, role });
   };
-logout = () => {
-  const auth = getAuth();
-signOut(auth).then(() => {
-  // Sign-out successful.
-  console.log('Sign out successfully')
-}).catch((error) => {
-  // An error happened.
-  console.log('Sign out catch error', error.message)
-});
-}
+  logout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        console.log("Sign out successfully");
+      })
+      .catch((error) => {
+        // An error happened.
+        console.log("Sign out catch error", error.message);
+      });
+  };
 
   render() {
-    const { email, pass } = this.state;
-    // console.log(email, pass);
+    const { email, pass, role } = this.state;
 
     return (
       <div style={styles.container}>
@@ -62,7 +64,7 @@ signOut(auth).then(() => {
           style={styles.textInput}
         />
 
-        <select id="roles" name="role" style={styles.textInput}>
+        <select value={this.state.role} id="roles" name="role" style={styles.textInput} onChange={(e) => this.setState({role: e.target.value})}>
           <option value="student">Student</option>
           <option value="company">Company</option>
         </select>
@@ -71,10 +73,10 @@ signOut(auth).then(() => {
           onClick={() => this.login()}
           style={styles.button}
         />
-        <Button 
-        value='Logout'
-        onClick={() => this.logout()}
-        style={styles.button}
+        <Button
+          value="Logout"
+          onClick={() => this.logout()}
+          style={styles.button}
         />
       </div>
     );
@@ -82,14 +84,14 @@ signOut(auth).then(() => {
 }
 
 function mapStateToProps(state) {
-  console.log('Login component State----->',state)
+  // console.log("Login component State----->", state);
   return {
     user: state.AppReducer.user,
   };
 }
-function mapDispatchToProps(dispatch){
-  return{
-    Signin: (payload) => dispatch(AppActions.Signin(payload))
-  }
+function mapDispatchToProps(dispatch) {
+  return {
+    Signin: (payload) => dispatch(AppActions.Signin(payload)),
+  };
 }
-export default connect(mapStateToProps,mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
