@@ -1,5 +1,4 @@
 import AppActions from "../Actions/AppActions";
-// import {createUserWithEmailAndPassword} from 'firebase/auth'
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -10,11 +9,12 @@ import {
   collection,
   addDoc,
   getDocs,
+  setDoc,
   doc,
   onSnapshot,
   query,
   where,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { put, delay } from "redux-saga/effects";
@@ -24,40 +24,43 @@ export default class AppMiddleware {
   static *Signin({ payload }) {
     // const auth = getAuth();
     // console.log('Parmas------>',params)
-    // console.log('Firebase Config------>', firebase)
+    console.log('App middle ware Sign in console')
 
     try {
       const { email, pass, role } = payload;
+      console.log('console before signIn method with email and pass', email , pass)
       const res = yield signInWithEmailAndPassword(getAuth(), email, pass);
       // .then((userCredential) => {
       // Signed in
       // const user = userCredential.user;
-      yield delay(1000);
-      // console.log("Sign ------>", res);
-      localStorage.setItem(
-        "userInfo",
-        JSON.stringify({ userId: res.user.uid, email, userRole: role })
-      );
+      // yield delay(1000);
+      console.log("Sign ------>", res);
+      // localStorage.setItem(
+      //   "userInfo",
+      //   JSON.stringify({ userId: res.user.uid, email, userRole: role })
+      // );
 
-      const userCollectionRef = collection(getFirestore(), "Users");
-      const userData = yield getDocs(userCollectionRef);
-      console.log("User Data ====> ", userData);
+      // const userCollectionRef = collection(getFirestore(), "Users");
+      // const userData = yield getDocs(userCollectionRef);
+      // console.log("User Data ====> ", userData);
 
-      const querySnapshot = yield getDocs(userCollectionRef);
-      querySnapshot.forEach((doc) => {
-        console.log('Doc id ====>', doc)
-        // const q = query(userData, where(doc.id, "==", res.user.uid));
-        console.log('Get Data by doc id =====>', doc.id, " => ", doc.data());
-        // console.log("Data after query------>", q);
+      // const querySnapshot = yield getDocs(userCollectionRef);
+      // querySnapshot.forEach((doc) => {
+      //   console.log("Doc id ====>", doc);
+      //   const q = query(userData, where(doc.id, "==", res.user.uid));
+      //   console.log("Get Data by doc id =====>", doc.id, " => ", doc.data());
+      //   console.log("Data after query------>", q);
+      // });
 
-        // console.log('Doc Data------>', doc)
-      });
+      // console.log(
+      //   "Get data fr3om firestore",
+      //   userData.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      // );
 
-      console.log('Get data fr3om firestore', userData.docs.map((doc) => ({...doc.data(), id: doc.id})))
-
-      yield put(AppActions.Signin_Success({ userId: res.user.uid, email }));
-    } catch (error) {
-      console.log("Sign In Try Error Message --->", error);
+      // yield put(AppActions.Signin_Success({ userId: res.user.uid, email }));
+    } 
+    catch (error) {
+      console.log("Sign In Try Error Message --->", error.message);
     }
   }
   static *SignUp({ payload }) {
@@ -79,12 +82,12 @@ export default class AppMiddleware {
       console.log("destructre from payload ----->", email, pass);
       // console.log('firebase auth---->', firebase.auth())
       const res = yield createUserWithEmailAndPassword(getAuth(), email, pass)
-        .then(async(res) => {
+        // .then(async (res) => {
           console.log("response", res);
           console.log("USER------>", res.user);
           const { uid } = res.user;
 
-          const docRef = await addDoc(collection(db, "Users"), {
+          const docRef = yield setDoc(doc(db, "Users",uid), {
             role,
             name,
             email,
@@ -93,16 +96,17 @@ export default class AppMiddleware {
             institute,
             cgpa,
             qualification,
-          })
-          const userDocId = doc(db,'Users', docRef.id)
-          const newFileds = {uid: docRef.id}
-          const updateId = updateDoc(userDocId,newFileds)
+          });
+          const userDocId = doc(db, "Users", docRef.id);
+          console.log('userDocId ===> ', userDocId)
+          // const newFileds = { uid: docRef.id };
+          // const updateId = updateDoc(userDocId, newFileds);
           // firebase.firestore().collection('Users').doc(uid).update({ userID: res.id })
           console.log("Doc Ref----->", docRef);
-        })
-        .catch((err) => {
-          console.log("err", err);
-        });
+        // })
+        // .catch((err) => {
+        //   console.log("err", err);
+        // });
     } catch (e) {
       console.log("error", e);
     }
