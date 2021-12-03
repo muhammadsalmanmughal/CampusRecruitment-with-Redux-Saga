@@ -84,7 +84,7 @@ class Login extends Component {
 }
 
 function mapStateToProps(state) {
-  // console.log("Login component State----->", state);
+  console.log("Login component State----->", state);
   return {
     user: state.AppReducer.user,
   };

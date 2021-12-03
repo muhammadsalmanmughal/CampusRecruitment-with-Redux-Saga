@@ -1,4 +1,5 @@
 import {
+  SAVE_USER_STATE,
   SIGNUP,
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
@@ -14,13 +15,19 @@ const initialState = {
 
 export default function AppReducer(state = JSON.parse(JSON.stringify(initialState)), action) {
   switch (action.type) {
+    case SAVE_USER_STATE:
+      console.log("SAVE_USER_STATE");
+      state = {
+        ...state,
+        user:action.payload
+      };
+      break;
     case SIGNIN:
       console.log("signin");
       state = {
         ...state,
         loader: true,
-        email: action.payload.email,
-        pass: action.payload.pass,
+        user:action.payload
       };
       break;
     // return {...state}

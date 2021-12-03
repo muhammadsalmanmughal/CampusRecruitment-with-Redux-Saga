@@ -1,29 +1,37 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Login, Signup } from "../../containers";
-import StudentDashboard from "../../containers/StudentDashboard";
+import { Login, Signup, } from "../../containers";
 import { connect } from "react-redux";
 import AppRoutes from "./AppRoutes";
+import AppActions from "../../store/Actions/AppActions";
 
 class AuthRoutes extends React.Component {
+  componentDidMount() {
+    let user = localStorage.getItem("userInfo");
+    if (user) {
+      console.log("user", user);
+      this.props.SaveUserState(JSON.parse(user));
+    } else this.props.SaveUserState({});
+  }
   render() {
-      // console.log("user",this.props?.user)
+    const { userInfo } = this.props.user;
     return (
       <div>
         <Routes>
-          {!this.props?.user?.userId ? (
+          {!userInfo?.uid ? (
             <>
               <Route exact path="/login" element={<Login />} />
               <Route exact path="/signup" element={<Signup />} />
-              <Route path="*" element={<Login/>} />
-              {/* <Route exact path="/signup" component={Signup}></Route> */}
             </>
           ) : (
             <>
-              {/* <Route path="/" component={AuthRoutes} /> */}
-              <Route exact path="/" element={<AppRoutes />} />
+              <Route exact path="/" element={<AppRoutes user={userInfo} />} />
             </>
           )}
+          <Route
+            path="*"
+            element={!userInfo?.uid ? <Navigate replace to="/login" /> : <Navigate replace to="/" />}
+          />
         </Routes>
       </div>
     );
@@ -36,8 +44,9 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps() {
+function mapDispatchToProps(dispatch) {
   return {
+    SaveUserState: (user) => dispatch(AppActions.SaveUserState(user)),
   };
 }
 

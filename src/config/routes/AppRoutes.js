@@ -3,17 +3,16 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import StudentDashboard  from '../../containers/StudentDashboard'
 import CompanyDashboard from '../../containers/CompanyDashboard';
 
-const AppRoutes = () => {
-    const {userRole} = JSON.parse(localStorage.getItem('userInfo'))
-    // console.log('localStorage role ------->', userRole)
+const AppRoutes = ({user}) => {
     return(
         <Routes>
-            {userRole == 'student'?
-            <Route exact path="/" element={<StudentDashboard />}/>
+            {user.role == 'Student'?
+            <Route exact path="/" element={<StudentDashboard user={user}/>}/>
             :
-            <Route exact path="/" element={<CompanyDashboard />}/>
+            <Route exact path="/" element={<CompanyDashboard user={user}/>}/>
         }
         </Routes>
     )
 }
+
 export default AppRoutes

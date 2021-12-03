@@ -1,3 +1,5 @@
+export const SAVE_USER_STATE = 'SAVE_USER_STATE'
+
 export const SIGNUP = 'SIGNUP'
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
 export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
