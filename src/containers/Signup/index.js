@@ -16,12 +16,12 @@ class Signup extends Component {
       institute: "random",
       cgpa: "2.2",
       address: "fasdfasdf",
-      qualification:''
+      qualification:'',
+      address:'asdfasdsf'
     };
     this.onChangeValue = this.onChangeValue.bind(this);
   }
   onChangeValue = (e) => {
-    console.log("radio value--->", e.target.value);
     this.setState({
       qualification: e.target.value,
     });
@@ -50,6 +50,7 @@ class Signup extends Component {
       institute,
       cgpa,
       qualification,
+      address
     };
 
     // localStorage.setItem("userInfo", JSON.stringify(userObj));
@@ -64,13 +65,28 @@ class Signup extends Component {
       cgpa: "",
       address: "",
     });
+    console.log('asdfsdfasdfasdfasdfasdfasdf  ======>   ', userObj)
 
-    this.props.SignUp({ email, pass, role, name, phone, institute, cgpa, qualification });
+    let payload = {
+      email,
+      pass,
+      role,
+      name,
+      phone,
+      institute,
+     }
+     if(role=='Student'){
+       payload.cgpa=cgpa
+       payload.qualification=qualification
+     }else{
+      payload.address=address
+     }
+    
+    this.props.SignUp(payload);
   };
   render() {
     const { role, name, email, pass, phone, institute, cgpa, address } =
       this.state;
-    console.log(email, pass);
 
     return (
       <div style={styles.container}>

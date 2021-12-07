@@ -6,6 +6,9 @@ import {
   SIGNIN,
   SIGNIN_SUCCESS,
   SIGNIN_FAILURE,
+  SIGNOUT,
+  SIGNOUT_SUCCESS,
+  SIGNOUT_FAILURE,
 } from "../Constants";
 
 const initialState = {
@@ -13,13 +16,16 @@ const initialState = {
   loader: false,
 };
 
-export default function AppReducer(state = JSON.parse(JSON.stringify(initialState)), action) {
+export default function AppReducer(
+  state = JSON.parse(JSON.stringify(initialState)),
+  action
+) {
   switch (action.type) {
     case SAVE_USER_STATE:
       console.log("SAVE_USER_STATE");
       state = {
         ...state,
-        user:action.payload
+        user: action.payload,
       };
       break;
     case SIGNIN:
@@ -27,7 +33,7 @@ export default function AppReducer(state = JSON.parse(JSON.stringify(initialStat
       state = {
         ...state,
         loader: true,
-        user:action.payload
+        user: action.payload,
       };
       break;
     // return {...state}
@@ -45,6 +51,19 @@ export default function AppReducer(state = JSON.parse(JSON.stringify(initialStat
         ...state,
         user: action.payload,
         loader: true,
+      };
+      break;
+
+    case SIGNOUT:
+      state = {
+        loader: true,
+        user: {},
+      };
+      break;
+    case SIGNOUT_SUCCESS:
+      state = {
+        ...state,
+        loader: false,
       };
       break;
     default:

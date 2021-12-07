@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Router} from "react-router-dom";
 import {Provider} from 'react-redux'
 import Store from './store'
 
@@ -19,10 +19,11 @@ firebase.initializeApp({
   appId: "1:645300521672:web:4dd0b38141b41e071273fd"
 });
 
+
 // Initialize Firebase
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter >
     <Provider store={Store}>
       <App />
     </Provider>

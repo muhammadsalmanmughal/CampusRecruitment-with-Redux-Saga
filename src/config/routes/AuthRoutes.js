@@ -1,6 +1,6 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Login, Signup, } from "../../containers";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { Login, Signup, StudentDashboard } from "../../containers";
 import { connect } from "react-redux";
 import AppRoutes from "./AppRoutes";
 import AppActions from "../../store/Actions/AppActions";
@@ -14,25 +14,25 @@ class AuthRoutes extends React.Component {
     } else this.props.SaveUserState({});
   }
   render() {
-    const { userInfo } = this.props.user;
+    const { userInfo={} } = this.props?.user;
+    // console.log("userInfo AuthRoutes==>", this.props);
     return (
       <div>
-        <Routes>
+        <Switch>
           {!userInfo?.uid ? (
-            <>
-              <Route exact path="/login" element={<Login />} />
-              <Route exact path="/signup" element={<Signup />} />
-            </>
+            <Switch>
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/signup" component={Signup} />
+              <Route path="*" render={() => <Redirect to="/login" />} />
+            </Switch>
           ) : (
-            <>
-              <Route exact path="/" element={<AppRoutes user={userInfo} />} />
-            </>
+            <Switch>
+              <Route exact path="/" component={AppRoutes} />
+              {/* <Route path="/" component={StudentDashboard} /> */}
+              <Route path="*" render={() => <Redirect to="/" />} />
+            </Switch>
           )}
-          <Route
-            path="*"
-            element={!userInfo?.uid ? <Navigate replace to="/login" /> : <Navigate replace to="/" />}
-          />
-        </Routes>
+        </Switch>
       </div>
     );
   }

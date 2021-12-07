@@ -1,18 +1,23 @@
-import React from 'react'
-import { Routes, Route, Navigate } from "react-router-dom";
-import StudentDashboard  from '../../containers/StudentDashboard'
-import CompanyDashboard from '../../containers/CompanyDashboard';
+import React from "react";
+import { Switch, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+import StudentDashboard from "../../containers/StudentDashboard";
+import CompanyDashboard from "../../containers/CompanyDashboard";
+const AppRoutes = (props) => {
+  // const history=useNavigate()
+  const appReducer = useSelector((store) => store.AppReducer);
+  const { userInfo } = appReducer.user;
+  console.log("App Route -------> ", props);
+  return (
+    <Switch>
+      {userInfo.role == "Student" ? (
+        <Route path="/" component={StudentDashboard} />
+      ) : (
+        <Route path="/" component={CompanyDashboard} />
+      )}
 
-const AppRoutes = ({user}) => {
-    return(
-        <Routes>
-            {user.role == 'Student'?
-            <Route exact path="/" element={<StudentDashboard user={user}/>}/>
-            :
-            <Route exact path="/" element={<CompanyDashboard user={user}/>}/>
-        }
-        </Routes>
-    )
-}
+    </Switch>
+  );
+};
 
-export default AppRoutes
+export default AppRoutes;

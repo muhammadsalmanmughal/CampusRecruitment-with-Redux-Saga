@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getAuth, signOut } from "firebase/auth";
 import { TextInput, Button } from "../../components";
 import AppActions from "../../store/Actions/AppActions";
 import styles from "./styles";
@@ -9,40 +8,20 @@ class Login extends Component {
   constructor() {
     super();
     this.state = {
-      email: "random@gmail.com",
-      pass: "random",
-      role: "student",
+      email: "firebase@gmail.com",
+      pass: "firebase"
     };
   }
 
   login = () => {
-    const { email, pass, role } = this.state;
-    // const { email: userEmail } = JSON.parse(localStorage.getItem("userInfo"));
-    // console.log("data from local storage----->", userEmail);
-
-    // if (userEmail == email) {
-    //   console.log("TRUE", "emai", userEmail);
-    // } else {
-    //   console.log("FALSE");
-    // }
+    const { email, pass } = this.state;
     const { Signin } = this.props;
-    Signin({ email, pass, role });
+    Signin({ email, pass });
   };
-  logout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        console.log("Sign out successfully");
-      })
-      .catch((error) => {
-        // An error happened.
-        console.log("Sign out catch error", error.message);
-      });
-  };
-
+ 
   render() {
-    const { email, pass, role } = this.state;
+    console.log('Login Props =====> ', this.props);
+    const { email, pass } = this.state;
 
     return (
       <div style={styles.container}>
@@ -64,10 +43,6 @@ class Login extends Component {
           style={styles.textInput}
         />
 
-        <select value={this.state.role} id="roles" name="role" style={styles.textInput} onChange={(e) => this.setState({role: e.target.value})}>
-          <option value="student">Student</option>
-          <option value="company">Company</option>
-        </select>
         <Button
           value="Login"
           onClick={() => this.login()}

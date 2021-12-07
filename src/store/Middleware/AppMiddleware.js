@@ -3,7 +3,9 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
+import { initializeApp } from "firebase/app";
 import {
   getFirestore,
   collection,
@@ -16,39 +18,25 @@ import {
   where,
   updateDoc,
 } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
 import { put, delay } from "redux-saga/effects";
 // import "firebase/auth";
 
 export default class AppMiddleware {
   static *Signin({ payload }) {
-    // const auth = getAuth();
-    // console.log('Parmas------>',params)
-    console.log("App middle ware Sign in console");
-
     try {
-      const { email, pass, role } = payload;
-      console.log(
-        "console before signIn method with email and pass",
-        email,
-        pass
-      );
+      const { email, pass } = payload;
       const res = yield signInWithEmailAndPassword(getAuth(), email, pass);
       const { uid } = res.user;
 
       const getUserData = doc(getFirestore(), "Users", uid);
       const docSnap = yield getDoc(getUserData);
 
-
       if (docSnap.exists()) {
-
-        console.log("if docs =====> ", docSnap.data());
-
         const userInfo = docSnap.data();
         localStorage.setItem("userInfo", JSON.stringify({ userInfo }));
         yield put(
           AppActions.Signin_Success({
-            userInfo
+            userInfo,
           })
         );
       } else {
@@ -59,36 +47,48 @@ export default class AppMiddleware {
     }
   }
 
-
   static *SignUp({ payload }) {
+    console.log('Signup Middleware -------> ', payload)
     const db = getFirestore();
-    try {
-      const {
-        role,
-        name,
-        email,
-        pass,
-        phone,
-        institute,
-        cgpa,
-        qualification,
-        address,
-      } = payload;
-      const res = yield createUserWithEmailAndPassword(getAuth(), email, pass);
-      const { uid } = res.user;
+    // try {
+    //   const {
+    //     role,
+    //     name,
+    //     email,
+    //     pass,
+    //     phone,
+    //     institute,
+    //     cgpa,
+    //     qualification,
+    //     address,
+    //   } = payload;
+    //   const res = yield createUserWithEmailAndPassword(getAuth(), email, pass);
+    //   const { uid } = res.user;
 
-      const docRef = yield setDoc(doc(db, "Users", uid), {
-        role,
-        name,
-        email,
-        phone,
-        uid,
-        institute,
-        cgpa,
-        qualification,
-      });
-    } catch (e) {
-      console.log("error", e);
+    //   const docRef = yield setDoc(doc(db, "Users", uid), {
+    //     role,
+    //     name,
+    //     email,
+    //     phone,
+    //     uid,
+    //     institute,
+    //     cgpa,
+    //     qualification,
+    //   });
+    // } catch (e) {
+    //   console.log("error", e);
+    // }
+  }
+
+  static *Signout() {
+    const auth = getAuth();
+    try {
+      const logOut = yield signOut(auth);
+      localStorage.removeItem("userInfo");
+      console.log('Logout Succssfully')
+      yield put(AppActions.Signout_Success({}));
+    } catch (error) {
+      console.log("Signout Catch Error =====> ", error);
     }
   }
 }
